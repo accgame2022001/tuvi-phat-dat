@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tử Vi Phát Đạt: Gieo quẻ Kinh Dịch 3 đồng xu âm dương, lắc ống xâm linh ứng, luận giải Tình Duyên, Tài Lộc, Sự Nghiệp, Gia Đạo cùng Ông Đồ.">
+<meta name="theme-color" content="#120704">
+<meta property="og:title" content="Tử Vi Phát Đạt · BEAR">
+<meta property="og:image" content="assets/tuvi-bg-dark.webp">
+<link rel="preload" as="image" href="assets/tuvi-bg-light.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/tuvi-bg-dark.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/atlas.webp" fetchpriority="high">
+<title>Tử Vi Phát Đạt · BEAR</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#120704; --fg:#fff5e0; --muted:#d9bfa0; --amber:#f5b942; --amber2:#ffe699;
+  --red:#b31b12; --mint:#63e6b0; --panel:rgba(36,16,8,.88); --line:rgba(245,185,66,.48);
+  --display:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%;margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);overflow:hidden;
+  padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+#stage{position:relative;aspect-ratio:9/16;height:100%;max-width:100%;max-height:100%;overflow:hidden;background:#120704;box-shadow:0 0 90px rgba(0,0,0,.85)}
+@media (max-aspect-ratio:9/16){#stage{width:100%;height:auto}}
+#stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+.hud{position:absolute;z-index:5;pointer-events:none;display:flex;gap:6px;align-items:center}
+.hud *{pointer-events:auto}
+#top{top:10px;left:10px;right:10px;justify-content:space-between;flex-wrap:wrap}
+#bottom{bottom:10px;left:10px;right:10px;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:12px;backdrop-filter:blur(8px);display:inline-flex;gap:5px;align-items:center;min-width:0}
+.chip b{font-weight:800;color:var(--amber2)}
+.chip small{font-size:10px;color:var(--muted);letter-spacing:.04em}
+.chip.day{border-color:rgba(255,214,120,.65)}
+.chip.night{border-color:rgba(245,185,66,.55)}
+.n{font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:11px;backdrop-filter:blur(8px)}
+.btn:hover{border-color:var(--amber)}
+.btn:focus-visible,input:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.btn.primary{background:linear-gradient(180deg,#d1281d,#8f120a);border-color:#ffd26a;color:#fff6e6;padding:12px 20px;font-size:15px;font-weight:800;letter-spacing:.02em}
+.btn.gift{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 8px;border-radius:12px;min-width:60px}
+.btn.gift small{color:var(--muted);font-size:9px;letter-spacing:.03em}
+.btn.gift b{color:var(--amber2);font-size:11px;font-weight:800}
+#gifts{display:flex;gap:5px;flex-wrap:wrap}
+#board{position:absolute;right:8px;top:48px;z-index:5;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:7px 9px;min-width:138px;max-width:155px;font-size:11px;backdrop-filter:blur(8px)}
+#board h3{margin:0 0 4px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber2);font-weight:800;text-align:center}
+#board ol{margin:0;padding-left:15px;display:grid;gap:2px}
+#board li span{float:right;color:var(--amber2);font-variant-numeric:tabular-nums;margin-left:6px;font-weight:700}
+#menu{position:absolute;left:8px;top:48px;z-index:5;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:7px 9px;width:142px;font-size:11px;backdrop-filter:blur(8px)}
+#menu h3{margin:0 0 4px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber2);font-weight:800;text-align:center}
+#menu .mi{display:flex;justify-content:space-between;gap:6px;padding:2px 0;font-size:10px}
+#menu .mi+.mi{border-top:1px solid rgba(245,185,66,.2)}
+#menu .mi b{color:var(--amber2);font-variant-numeric:tabular-nums}
+#hexMini{margin-top:6px;padding-top:5px;border-top:1px solid rgba(245,185,66,.3);text-align:center}
+#hexMiniBars{display:flex;flex-direction:column-reverse;gap:3px;padding:4px 14px;background:rgba(0,0,0,.3);border-radius:8px;margin-bottom:3px}
+.hmbar{height:4px;display:flex;justify-content:space-between}
+.hmbar.yang::before{content:"";width:100%;height:100%;background:#ffd26a;border-radius:2px}
+.hmbar.yin::before,.hmbar.yin::after{content:"";width:43%;height:100%;background:#ffd26a;border-radius:2px}
+#hexMiniName{font-weight:800;color:var(--amber2);font-size:11px}
+#hexMiniRank{font-size:9px;color:var(--muted)}
+#oracleScroll{position:absolute;left:16px;right:16px;top:51%;z-index:4;padding:8px 12px;border-radius:12px;
+  background:linear-gradient(180deg,#fff7df,#f2daa4);border:2px solid #c98a2c;color:#381a06;text-align:center;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);pointer-events:none}
+#osKicker{font-size:9px;font-weight:800;letter-spacing:.12em;color:#8c3b0c;text-transform:uppercase}
+#osBody{font-size:11px;font-weight:700;line-height:1.3;margin:3px 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#feed{position:absolute;left:10px;bottom:84px;z-index:4;width:54%;max-width:240px;display:flex;flex-direction:column;gap:4px;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 25%);mask-image:linear-gradient(to bottom,transparent,#000 25%)}
+.msg{background:rgba(20,8,4,.72);border-radius:9px;padding:4px 8px;font-size:11px;line-height:1.3;max-width:100%;min-width:0;overflow-wrap:anywhere;animation:in .35s ease-out}
+.msg b{color:var(--amber2);font-weight:700}
+.msg.gift{background:rgba(140,28,16,.82);border:1px solid rgba(245,185,66,.55)}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+#gate{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 30%,rgba(245,185,66,.18),rgba(14,5,2,.9) 68%);padding:16px}
+#gate form{width:min(100%,370px);background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:20px 18px;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:11px;box-shadow:0 24px 70px rgba(0,0,0,.75)}
+#gate h1{font-weight:800;font-size:24px;margin:0;color:var(--amber2);letter-spacing:.02em}
+#gate p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+label{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+input{font:inherit;font-size:15px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.42);color:var(--fg);width:100%;box-sizing:border-box}
+input::placeholder{color:#8a725c}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hint{font-size:11px;color:var(--muted)}
+.seg{display:flex;gap:5px;flex-wrap:wrap}
+.seg button{background:rgba(0,0,0,.38);border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:5px 10px;font-size:11px}
+.seg button[aria-pressed="true"]{background:linear-gradient(180deg,#d1281d,#8f120a);border-color:#ffd26a;color:#fff6e6;font-weight:700}
+#toast{position:absolute;left:50%;top:9%;transform:translateX(-50%);z-index:6;background:rgba(36,14,6,.94);border:1px solid var(--amber2);border-radius:12px;padding:8px 14px;color:var(--amber2);font-size:13px;font-weight:700;opacity:0;transition:opacity .35s;pointer-events:none;max-width:88%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#toast.show{opacity:1}
+#beerCard{position:absolute;left:50%;top:14%;transform:translate(-50%,10px) scale(.96);z-index:7;width:min(88%,360px);padding:14px 18px;border-radius:18px;border:2px solid var(--amber2);
+  background:radial-gradient(ellipse at 50% 0%,rgba(148,30,16,.97),rgba(26,8,4,.98));box-shadow:0 0 50px rgba(245,185,66,.4),0 18px 50px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;transition:opacity .35s,transform .35s cubic-bezier(.2,1.3,.4,1);text-align:center}
+#beerCard.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.bc-kicker{font-size:10px;letter-spacing:.18em;color:var(--amber2);font-weight:800}
+.bc-name{font-size:22px;font-weight:800;color:#fff2d6;margin-top:2px;overflow-wrap:anywhere}
+.bc-amount{font-size:26px;font-weight:800;color:var(--amber2);margin-top:2px;text-shadow:0 0 20px rgba(255,180,70,.55)}
+.bc-total{font-size:11px;color:#f5dfc0;margin-top:4px;line-height:1.35}
+#dice{position:absolute;left:50%;top:13%;transform:translate(-50%,12px) scale(.94);z-index:7;width:min(88%,370px);padding:15px 18px 16px;border-radius:18px;border:2px solid #ffd98a;
+  background:linear-gradient(180deg,rgba(68,20,12,.98),rgba(22,7,4,.98));box-shadow:0 0 60px rgba(245,185,66,.3),0 20px 55px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;transition:opacity .35s,transform .35s cubic-bezier(.2,1.3,.4,1);text-align:center}
+#dice.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.dz-kicker{font-size:10px;letter-spacing:.18em;color:var(--amber2);font-weight:800}
+.dz-name{font-size:21px;font-weight:800;color:#fff2d6;margin:3px 0 8px;overflow-wrap:anywhere}
+.dz-row{display:flex;justify-content:center;gap:10px;margin-bottom:8px}
+.die{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff4b8,#e6aa2c 65%,#8c5608);border:2px solid #ffea9f;box-shadow:0 6px 14px rgba(0,0,0,.45);display:grid;place-items:center;font-size:22px;font-weight:800;color:#4a2504}
+.dz-label{display:inline-block;font-size:19px;font-weight:800;letter-spacing:.06em;padding:4px 16px;border-radius:999px;color:#241605;background:linear-gradient(180deg,#ffe9a8,#ffc95c)}
+.dz-label.bao{background:linear-gradient(180deg,#ffdf7a,#ff9d2e);box-shadow:0 0 24px rgba(255,170,50,.55)}
+.dz-bonus{font-size:12px;color:var(--amber2);font-weight:700;margin-top:6px}
+.dz-challenge{font-size:11px;color:#fff0d4;margin-top:5px;line-height:1.35}
+#nowPlaying{display:inline-block;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+</style>
+</head>
+<body>
+
+<div id="wrap"><div id="stage">
+  <canvas id="c"></canvas>
+  <div id="top" class="hud">
+    <span class="chip" id="me" hidden><b id="meName"></b><span class="hint" id="meTopic">Tình Duyên</span></span>
+    <span class="chip"><span class="n" id="count">0</span><span>thiện tín</span></span>
+    <span class="chip"><span class="n" id="barTotal">0</span><span>KC</span></span>
+    <button class="chip night" id="phaseChip" title="Đổi cảnh sáng / tối">☯ <span id="phaseName">Linh Đàn · Đêm</span> <small>đổi</small></button>
+  </div>
+  <div id="menu">
+    <h3>✿ 5 Mốc Quẻ ✿</h3>
+    <div id="menuRows"></div>
+    <div id="hexMini">
+      <div id="hexMiniBars"></div>
+      <div id="hexMiniName">Thuần Càn</div>
+      <div id="hexMiniRank">Quẻ số 1 · Đại Cát</div>
+    </div>
+  </div>
+  <div id="board" hidden><h3>✦ Top Công Đức ✦</h3><ol id="boardList"></ol></div>
+  <div id="oracleScroll">
+    <div id="osKicker">✦ ÔNG ĐỒ NHẮN GỬI ✦</div>
+    <div id="osBody">Chọn mốc quẻ bên dưới để Ông Đồ gieo 3 đồng xu cổ và luận giải vận mệnh!</div>
+  </div>
+  <div id="feed" aria-live="polite"></div>
+  <div id="bottom" class="hud">
+    <span id="gifts" hidden>
+      <button class="btn gift" data-beers="1" data-kind="rose"><b>🪙 Khai Lộc</b><small>1 KC · Quẻ ngắn</small></button>
+      <button class="btn gift" data-beers="15" data-kind="beer"><b>📜 Phúc Lộc</b><small>15 KC · Quẻ sâu</small></button>
+      <button class="btn gift" data-beers="1" data-kind="dice"><b>🎋 Xin Xâm</b><small>Lắc ống xâm</small></button>
+      <button class="btn gift" data-beers="40" data-kind="tower"><b>🔮 Thiên Lộc</b><small>40 KC · Đại quẻ</small></button>
+      <button class="btn gift" data-beers="150" data-kind="tower"><b>👑 Thiên Mệnh</b><small>150 KC · Đại cát</small></button>
+    </span>
+    <span class="row">
+      <button class="btn" id="topicBtn" hidden title="Đổi chủ đề xin quẻ">💕 Tình Duyên</button>
+      <button class="btn" id="skinBtn" hidden title="Đổi nhân vật">🎭 Nam</button>
+      <button class="btn" id="nextTrack" hidden title="Bài kế tiếp"><span id="nowPlaying">♪</span> ›</button>
+      <button class="btn" id="mute" hidden aria-pressed="false">Tắt nhạc</button>
+      <button class="btn" id="leave" hidden>Rời phòng</button>
+    </span>
+  </div>
+  <div id="beerCard" role="status">
+    <div class="bc-kicker" id="bcKicker">☯ ÔNG ĐỒ LUẬN QUẺ</div>
+    <div class="bc-name" id="bcName"></div>
+    <div class="bc-amount" id="bcAmount"></div>
+    <div class="bc-total" id="bcTotal"></div>
+  </div>
+  <div id="dice" role="status">
+    <div class="dz-kicker">🎋 LẮC ỐNG XÂM LINH ỨNG</div>
+    <div class="dz-name" id="dzName"></div>
+    <div class="dz-row" id="dzDice"></div>
+    <div><span class="dz-label" id="dzLabel"></span></div>
+    <div class="dz-bonus" id="dzBonus"></div>
+    <div class="dz-challenge" id="dzChallenge"></div>
+  </div>
+  <div id="toast" role="status"></div>
+  <div id="gate">
+    <form id="gateForm">
+      <h1>☯ Tử Vi Phát Đạt</h1>
+      <p id="gateIntro">Bước vào Linh Đàn Tử Vi, ngồi lên chiếu đỏ trước Ông Đồ, chọn chủ đề muốn hỏi rồi bấm Gieo Quẻ hoặc Lắc Ống Xâm để xem quẻ Kinh Dịch 64 quẻ.</p>
+      <label for="guestName">Tên của bạn</label>
+      <input id="guestName" name="guestName" maxlength="20" autocomplete="nickname" placeholder="Ví dụ: Kiều Hùng, Bích Tuyền…" required>
+      <label>Nhân vật</label>
+      <div class="seg" id="skin">
+        <button type="button" data-group="male" aria-pressed="true">Nam · Công tử</button>
+        <button type="button" data-group="female" aria-pressed="false">Nữ · Tiểu thư</button>
+        <button type="button" data-group="oldman" aria-pressed="false">Ông già</button>
+        <button type="button" data-group="oldwoman" aria-pressed="false">Bà già</button>
+      </div>
+      <label>Chủ đề muốn xin quẻ</label>
+      <div class="seg" id="topicSeg">
+        <button type="button" data-topic="tinh_duyen" aria-pressed="true">💕 Tình Duyên</button>
+        <button type="button" data-topic="tai_loc" aria-pressed="false">💰 Tài Lộc</button>
+        <button type="button" data-topic="su_nghiep" aria-pressed="false">📈 Sự Nghiệp</button>
+        <button type="button" data-topic="gia_dao" aria-pressed="false">🏡 Gia Đạo</button>
+        <button type="button" data-topic="suc_khoe" aria-pressed="false">🌿 Sức Khỏe</button>
+      </div>
+      <div class="row">
+        <button type="submit" class="btn primary">☯ Vào Phòng Xem Tử Vi</button>
+      </div>
+      <div class="row">
+        <span class="hint">Thực hiện bởi BEAR · mã nguồn mở MIT</span>
+      </div>
+      <div class="row">
+        <span class="hint" id="voiceInfo">Đang chuẩn bị giọng đọc Ông Đồ…</span>
+      </div>
+    </form>
+  </div>
+</div></div>
+
+<script src="assets/bar-sound.js"></script>
+<script src="assets/audio-player.js"></script>
+<script src="assets/sprites.js"></script>
+<script src="assets/beer-fx.js"></script>
+<script src="assets/scene.js"></script>
+<script>
+const SW = 1080, SH = 1920;
+const canvas = document.getElementById('c'), ctx = canvas.getContext('2d');
+canvas.width = SW; canvas.height = SH;
+const A = {};
+for (const [key, src] of [['light', 'assets/tuvi-bg-light.webp'], ['dark', 'assets/tuvi-bg-dark.webp']]){
+  const im = new Image(); im.src = src; A[key] = im;
+}
+const SP = BeerSprites.create('assets/');
+const SC = BeerScene;
+const spriteH = key => SP.dim(key).h || (key.startsWith('walk_') ? 740 : 420);
+
+let world = SC.layout(12), cap = world.cap;
+const visitors = new Map();
+const freeSeat = () => world.seats.find(s => !s.taken);
+const liveCount = () => { let n = 0; for (const v of visitors.values()) if (!v.leaving) n++; return n; };
+let phaseMode = 'beer', night = 1, nightTarget = 1, phaseKey = '';
+const clock = { foodFrom: 6, beerFrom: 18, phaseMode };
+
+const masterState = { mode: 'idle', until: 0, spinBoost: 0 };
+const castState = { active: false, startAt: 0, dur: 2200, progress: 0, coins: [1, 1, 1] };
+let activeReading = null, activeTimer = null;
+
+function renderMiniHex(hex){
+  if (!hex) return;
+  const box = document.getElementById('hexMiniBars');
+  box.replaceChildren();
+  for (let i = 0; i < 6; i++){
+    const d = document.createElement('div');
+    d.className = 'hmbar ' + (hex.lines[i] ? 'yang' : 'yin');
+    box.append(d);
+  }
+  document.getElementById('hexMiniName').textContent = hex.name;
+  document.getElementById('hexMiniRank').textContent = `Quẻ số ${hex.num} · ${hex.rank}`;
+}
+renderMiniHex(SC.HEXAGRAMS[0]);
+
+function triggerCast(v, order, hex){
+  const now = performance.now();
+  masterState.mode = 'shake';
+  masterState.until = now + 4200;
+  masterState.spinBoost = 1;
+  castState.active = true;
+  castState.startAt = now + 800;
+  castState.dur = 2300;
+  castState.coins = hex.coins || [1, 0, 1];
+  renderMiniHex(hex);
+  activeReading = {
+    id: v.id,
+    name: v.name,
+    skin: v.skin,
+    tierLabel: order.tierLabel,
+    topic: hex.topicLabel,
+    coins: v.beers,
+    hex,
+  };
+  document.getElementById('osKicker').textContent = `✦ LUẬN QUẺ CHO ${v.name.toUpperCase()}: ${hex.name.toUpperCase()} (${hex.rank}) ✦`;
+  document.getElementById('osBody').textContent = `${hex.mainText} ${hex.advice}`;
+  clearTimeout(activeTimer);
+  activeTimer = setTimeout(() => {
+    activeReading = null;
+    document.getElementById('osKicker').textContent = '✦ ÔNG ĐỒ NHẮN GỬI ✦';
+    document.getElementById('osBody').textContent = 'Chọn mốc quẻ bên dưới để Ông Đồ gieo 3 đồng xu cổ và luận giải vận mệnh!';
+  }, 11000);
+}
+
+function startWalkIn(v){
+  const s = v.seat.scale, feetY = v.seat.y + SC.WALK_HIP * s;
+  const lane = v.seat.x < 540 ? 180 : 900;
+  v.state = 'walk'; v.x = lane; v.y = 2050; v.speed = 320; v.fade = .15; v.walkPhase = 0;
+  v.path = [{ x: lane, y: feetY }, { x: v.seat.x, y: feetY }];
+}
+function startLeave(v){
+  if (!v || v.leaving) return;
+  v.leaving = true; v.seat.taken = null; v.bubble = null;
+  if (v.state === 'walk'){ visitors.delete(v.id); updateCount(); return; }
+  const s = v.seat.scale, feetY = v.seat.y + SC.WALK_HIP * s;
+  const lane = v.seat.x < 540 ? 180 : 900;
+  v.state = 'leave'; v.x = v.seat.x; v.y = feetY; v.walkPhase = 0;
+  v.path = [{ x: lane, y: feetY }, { x: lane, y: 2080 }];
+  updateCount(); renderBoard();
+}
+function addVisitor(name, skin, instant, isMe, topicId = 'tinh_duyen'){
+  const seat = freeSeat();
+  if (!seat) return null;
+  const tpObj = SC.TOPICS.find(x => x.id === topicId) || SC.TOPICS[0];
+  const v = {
+    id: 'g' + (++addVisitor.seq), name, skin, isMe: !!isMe,
+    topicId: tpObj.id, topic: tpObj.label, asked: false,
+    seat, side: seat.side, state: 'sit', x: seat.x, y: seat.y, fade: instant ? 1 : 0, pop: instant ? 1 : .4,
+    glow: 0, cheer: 0, sip: 0, nextSip: 3 + Math.random() * 12, bubble: null, phase: Math.random() * 6.28,
+    beers: 0, walkPhase: 0, leaving: false,
+  };
+  seat.taken = v;
+  visitors.set(v.id, v);
+  if (!instant) startWalkIn(v);
+  updateCount(); renderBoard();
+  return v;
+}
+addVisitor.seq = 0;
+const countEl = document.getElementById('count'), totalEl = document.getElementById('barTotal');
+let totalBeers = 0;
+function updateCount(){ countEl.textContent = liveCount(); }
+function updateTotal(){ totalEl.textContent = totalBeers; }
+
+function renderMenu(){
+  const box = document.getElementById('menuRows'); box.replaceChildren();
+  for (const item of SC.MENU){
+    const row = document.createElement('div'); row.className = 'mi';
+    const a = document.createElement('span'); a.textContent = `${item.icon} ${item.label}`;
+    const b = document.createElement('b'); b.textContent = `${item.coins}+ KC`;
+    row.append(a, b); box.append(row);
+  }
+}
+renderMenu();
+
+function renderBoard(){
+  const top = [...visitors.values()].filter(v => !v.leaving && v.beers > 0).sort((a, b) => b.beers - a.beers).slice(0, 5);
+  const board = document.getElementById('board'), ol = document.getElementById('boardList');
+  if (!top.length){ board.hidden = true; return; }
+  board.hidden = false; ol.replaceChildren();
+  for (const v of top){
+    const li = document.createElement('li');
+    li.textContent = v.name;
+    const sp = document.createElement('span'); sp.textContent = v.beers + ' KC';
+    li.append(sp); ol.append(li);
+  }
+}
+
+const SAMPLE_GUESTS = [
+  ['Bích Tuyền', 'woman', 30, 'tinh_duyen'],
+  ['Mếnn Mèoo', 'sexy', 25, 'tai_loc'],
+  ['Bỉ Ngạn Chiều', 'woman', 20, 'gia_dao'],
+  ['Đỗ Văn Đại', 'man', 16, 'su_nghiep'],
+  ['Lâm Nguyễn', 'cap', 13, 'tai_loc'],
+  ['Cụ Bính', 'uncle', 8, 'suc_khoe'],
+  ['Bà Sáu', 'oldwoman', 5, 'gia_dao'],
+];
+for (const [n, sk, b, tp] of SAMPLE_GUESTS){
+  const v = addVisitor(n, sk, true, false, tp);
+  if (v){ v.beers = b; v.asked = true; totalBeers += b; }
+}
+updateTotal(); renderBoard();
+
+let me = null, selectedGroup = 'male', selectedTopic = 'tinh_duyen';
+function pickGroupSkin(groupKey, current){
+  const g = SC.SKIN_GROUPS[groupKey] || SC.SKIN_GROUPS.male;
+  const other = g.skins.filter(s => s !== current);
+  const pool = other.length ? other : g.skins;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+document.querySelectorAll('#skin button').forEach(btn => {
+  btn.onclick = () => {
+    selectedGroup = btn.dataset.group;
+    document.querySelectorAll('#skin button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+  };
+});
+document.querySelectorAll('#topicSeg button').forEach(btn => {
+  btn.onclick = () => {
+    selectedTopic = btn.dataset.topic;
+    document.querySelectorAll('#topicSeg button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+  };
+});
+
+let AC = null, masterGain = null, sfxBus = null, noiseBuf = null, crowd = null, muted = false;
+const player = new BarAudio.MusicPlayer({ manifestUrl: 'assets/music/library.json', storageKey: 'tuviDemoMusic', fadeIn: 2 });
+function ensureAudio(){
+  if (AC) return;
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = AC.createGain(); masterGain.gain.value = .88; masterGain.connect(AC.destination);
+  sfxBus = AC.createGain(); sfxBus.gain.value = 1; sfxBus.connect(masterGain);
+  noiseBuf = AC.createBuffer(1, AC.sampleRate * 1.2, AC.sampleRate);
+  const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  crowd = new BarSound.Crowd(AC, masterGain);
+  crowd.start();
+  player.attach(AC, masterGain);
+  player.start();
+  player.onTrack(st => {
+    if (st.track) document.getElementById('nowPlaying').textContent = '♪ ' + st.track.title;
+  });
+}
+function ping(t, freq, dur, gain){
+  if (!AC || muted) return;
+  const o = AC.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(freq, t);
+  const g = AC.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + .008); g.gain.exponentialRampToValueAtTime(.0005, t + dur);
+  o.connect(g); g.connect(sfxBus); o.start(t); o.stop(t + dur + .05);
+}
+function noise(t, dur, freq, q, gain){
+  if (!AC || muted) return;
+  const src = AC.createBufferSource(); src.buffer = noiseBuf;
+  const bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = q;
+  const g = AC.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + .01); g.gain.exponentialRampToValueAtTime(.0008, t + dur);
+  src.connect(bp); bp.connect(g); g.connect(sfxBus); src.start(t); src.stop(t + dur + .05);
+}
+function sfxClink(big){
+  if (!AC || muted) return;
+  const t = AC.currentTime;
+  ping(t, big ? 528 : 792, 1.3, .16);
+  ping(t + .06, big ? 1056 : 1584, .85, .10);
+}
+function sfxCoins(){
+  if (!AC || muted) return;
+  const t = AC.currentTime;
+  for (let i = 0; i < 3; i++){
+    ping(t + i * .15, 1760 + i * 240, .35, .12);
+    ping(t + i * .15 + .04, 3120 + i * 180, .22, .08);
+  }
+}
+function sfxSticks(){
+  if (!AC || muted) return;
+  const t = AC.currentTime;
+  for (let i = 0; i < 7; i++) noise(t + i * .06, .055, 980 + (i % 3) * 260, 4, .11);
+}
+
+let viVoice = null;
+function pickVoice(){
+  if (!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices();
+  viVoice = vs.find(v => /^vi/i.test(v.lang) && /nam|minh|male/i.test(v.name)) || vs.find(v => /^vi/i.test(v.lang)) || null;
+  document.getElementById('voiceInfo').textContent = viVoice ? `Giọng đọc: ${viVoice.name}` : 'Đã sẵn sàng âm thanh linh đàn';
+}
+if ('speechSynthesis' in window){ speechSynthesis.onvoiceschanged = pickVoice; pickVoice(); }
+
+function speak(text){
+  if (muted || !('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'vi-VN';
+    if (viVoice) u.voice = viVoice;
+    u.rate = 0.98;
+    u.pitch = 0.88;
+    u.onstart = () => { player.duck(true); crowd?.duck(true); masterState.mode = 'read'; };
+    u.onend = u.onerror = () => { player.duck(false); crowd?.duck(false); masterState.mode = 'idle'; };
+    speechSynthesis.speak(u);
+  } catch {}
+}
+
+function addFeed(html, cls = ''){
+  const box = document.getElementById('feed');
+  const d = document.createElement('div'); d.className = 'msg ' + cls; d.innerHTML = html;
+  box.append(d);
+  while (box.children.length > 5) box.firstElementChild.remove();
+}
+let toastHide = null, cardHide = null;
+function showToast(text){
+  const el = document.getElementById('toast'); el.textContent = text; el.classList.add('show');
+  clearTimeout(toastHide); toastHide = setTimeout(() => el.classList.remove('show'), 3400);
+}
+function hideCards(){
+  document.getElementById('beerCard').classList.remove('show');
+  document.getElementById('dice').classList.remove('show');
+}
+function showBeerCard(name, order, hex, total){
+  hideCards();
+  document.getElementById('bcKicker').textContent = `☯ ${order.tierLabel.toUpperCase()} · ${hex.topicLabel.toUpperCase()}`;
+  document.getElementById('bcName').textContent = name;
+  document.getElementById('bcAmount').textContent = `Quẻ số ${hex.num} · ${hex.name}`;
+  document.getElementById('bcTotal').textContent = `${hex.rank}: ${hex.mainText} (Tổng ${total} KC)`;
+  document.getElementById('beerCard').classList.add('show');
+  clearTimeout(cardHide); cardHide = setTimeout(hideCards, 6500);
+}
+function showDiceCard(v){
+  hideCards();
+  const dice = [1, 2, 3].map(() => 1 + Math.floor(Math.random() * 6));
+  const sum = dice.reduce((a, b) => a + b, 0);
+  const label = sum >= 14 ? 'THƯỢNG THƯỢNG CÁT!' : sum >= 9 ? 'ĐẠI CÁT · VƯỢNG LỘC' : 'THƯỢNG CÁT · BÌNH AN';
+  const bonus = sum >= 14 ? 3 : sum >= 9 ? 2 : 1;
+  v.beers += bonus; totalBeers += bonus; v.asked = true;
+  updateTotal(); renderBoard();
+  const hex = SC.castHexagram(v.topicId, 'phuc_loc');
+  triggerCast(v, SC.orderFromCoins(v.beers, v.topic), hex);
+
+  document.getElementById('dzName').textContent = v.name;
+  const row = document.getElementById('dzDice'); row.replaceChildren();
+  for (const val of dice){
+    const d = document.createElement('div'); d.className = 'die';
+    d.textContent = val % 2 === 1 ? '乾' : '坤';
+    row.append(d);
+  }
+  const lab = document.getElementById('dzLabel'); lab.textContent = label; lab.className = 'dz-label ' + (sum >= 14 ? 'bao' : '');
+  document.getElementById('dzBonus').textContent = `Xâm số ${sum} · Cộng +${bonus} KC công đức`;
+  document.getElementById('dzChallenge').textContent = hex.verse;
+  document.getElementById('dice').classList.add('show');
+  clearTimeout(cardHide); cardHide = setTimeout(hideCards, 6800);
+  sfxSticks();
+  speak(`Ông Đồ lắc ống xâm cho ${v.name}, được xâm số ${sum}, ${label}. ${hex.verse}`);
+}
+
+const fx = [], particles = [];
+function castFx(v, coins, order, hex){
+  v.glow = 1; v.cheer = 1; v.sip = 1; v.asked = true;
+  triggerCast(v, order, hex);
+  const s = v.seat.scale, y = v.y - 250 * s;
+  for (let i = 0; i < 3; i++){
+    fx.push({ kind: 'coin', x: 540 + (i - 1) * 65, y: 1180, t: 0, life: 2.1, s: 0.9, tilt: (i - 1) * 0.25 });
+  }
+  fx.push({ kind: 'ingot', x: v.x, y, t: 0, life: 2.2, s: s * 1.35, tilt: 0 });
+  for (let i = 0; i < 16; i++){
+    particles.push({
+      type: i % 3 === 0 ? 'lotus' : 'coin',
+      x: v.x + (Math.random() - .5) * 90 * s,
+      y: y - 10,
+      vx: (Math.random() - .5) * 50,
+      vy: -(50 + Math.random() * 85),
+      t: 0,
+      life: 1.6 + Math.random(),
+      s: .65 + Math.random() * .55,
+      rot: Math.random() * 6,
+    });
+  }
+  sfxSticks();
+  setTimeout(() => sfxCoins(), 650);
+  sfxClink(coins >= 30);
+}
+
+document.getElementById('gateForm').onsubmit = e => {
+  e.preventDefault();
+  ensureAudio();
+  const name = (document.getElementById('guestName').value || 'Thiện Tín').trim().slice(0, 18);
+  const skin = pickGroupSkin(selectedGroup, '');
+  me = addVisitor(name, skin, false, true, selectedTopic);
+  if (!me) return;
+  document.getElementById('gate').hidden = true;
+  document.getElementById('me').hidden = false;
+  document.getElementById('meName').textContent = me.name;
+  document.getElementById('meTopic').textContent = me.topic;
+  for (const id of ['gifts', 'topicBtn', 'skinBtn', 'nextTrack', 'mute', 'leave']) document.getElementById(id).hidden = false;
+  document.getElementById('skinBtn').textContent = '🎭 ' + SC.SKIN_GROUPS[selectedGroup].label.split(' ')[0];
+  document.getElementById('topicBtn').textContent = `${(SC.TOPICS.find(x => x.id === selectedTopic) || SC.TOPICS[0]).icon} ${me.topic}`;
+  sfxClink(true);
+  showToast(`Hoan hỷ chào đón ${me.name} vào phòng Tử Vi Phát Đạt!`);
+  addFeed(`☯ <b>${me.name}</b> đã vào phòng, chọn chủ đề <b>${me.topic}</b>`);
+  speak(`Hoan hỷ chào đón thí chủ ${me.name} bước vào phòng Tử Vi Phát Đạt. Mời ngồi lên chiếu đỏ và chọn mốc gieo quẻ!`);
+};
+
+document.querySelectorAll('#gifts button').forEach(btn => {
+  btn.onclick = () => {
+    if (!me) return;
+    ensureAudio();
+    const kind = btn.dataset.kind;
+    if (kind === 'dice'){
+      showDiceCard(me);
+      addFeed(`🎋 <b>${me.name}</b> lắc ống xâm linh ứng`, 'gift');
+      return;
+    }
+    const coins = +btn.dataset.beers || 1;
+    me.beers += coins; totalBeers += coins;
+    updateTotal(); renderBoard();
+    const order = SC.orderFromCoins(coins, me.topic);
+    const hex = SC.castHexagram(me.topicId, order.tierId);
+    castFx(me, coins, order, hex);
+    me.bubble = { text: `Xin quẻ ${order.tierLabel} · ${me.topic}`, until: performance.now() + 5500 };
+    showBeerCard(me.name, order, hex, me.beers);
+    addFeed(`☯ <b>${me.name}</b> gieo <b>${order.tierLabel} (${me.topic})</b> → Quẻ <b>${hex.name}</b>`, 'gift');
+    speak(`Ông Đồ gieo quẻ ${order.tierLabel} cho ${me.name}. ${hex.fullReading}`);
+  };
+});
+
+const GROUP_KEYS = Object.keys(SC.SKIN_GROUPS);
+document.getElementById('skinBtn').onclick = () => {
+  if (!me) return;
+  selectedGroup = GROUP_KEYS[(GROUP_KEYS.indexOf(selectedGroup) + 1) % GROUP_KEYS.length];
+  me.skin = pickGroupSkin(selectedGroup, me.skin);
+  me.glow = .8;
+  document.getElementById('skinBtn').textContent = '🎭 ' + SC.SKIN_GROUPS[selectedGroup].label.split(' ')[0];
+};
+document.getElementById('topicBtn').onclick = () => {
+  if (!me) return;
+  const idx = (SC.TOPICS.findIndex(x => x.id === me.topicId) + 1) % SC.TOPICS.length;
+  const tp = SC.TOPICS[idx];
+  me.topicId = tp.id; me.topic = tp.label;
+  document.getElementById('meTopic').textContent = tp.label;
+  document.getElementById('topicBtn').textContent = `${tp.icon} ${tp.label}`;
+  me.bubble = { text: `Con muốn hỏi về ${tp.label}`, until: performance.now() + 4200 };
+  showToast(`Đã đổi chủ đề xin quẻ: ${tp.icon} ${tp.label}`);
+};
+document.getElementById('nextTrack').onclick = () => { ensureAudio(); player.next(); };
+document.getElementById('mute').onclick = e => {
+  muted = !muted;
+  e.currentTarget.setAttribute('aria-pressed', String(muted));
+  e.currentTarget.textContent = muted ? 'Bật nhạc' : 'Tắt nhạc';
+  player.setEnabled(!muted);
+  crowd?.setEnabled(!muted);
+  if (muted && 'speechSynthesis' in window) speechSynthesis.cancel();
+};
+document.getElementById('leave').onclick = () => {
+  if (!me) return;
+  startLeave(me); me = null;
+  document.getElementById('me').hidden = true;
+  for (const id of ['gifts', 'topicBtn', 'skinBtn', 'nextTrack', 'mute', 'leave']) document.getElementById(id).hidden = true;
+  document.getElementById('gate').hidden = false;
+};
+
+const MODES = ['auto', 'food', 'beer'];
+document.getElementById('phaseChip').onclick = () => {
+  phaseMode = MODES[(MODES.indexOf(phaseMode) + 1) % MODES.length];
+  clock.phaseMode = phaseMode;
+  const info = SC.phaseInfo(clock);
+  nightTarget = info.night;
+  document.getElementById('phaseName').textContent = info.label;
+};
+
+canvas.addEventListener('pointerdown', () => {
+  if (!me) return;
+  ensureAudio();
+  me.cheer = 1; me.sip = 1; me.glow = .7;
+  sfxClink(false);
+  showToast(`🙏 ${me.name} thành tâm khấn nguyện · ${me.topic}`);
+});
+
+const glowCv = document.createElement('canvas'); glowCv.width = glowCv.height = 400;
+{ const g = glowCv.getContext('2d'), grd = g.createRadialGradient(200, 200, 10, 200, 200, 200); grd.addColorStop(0, 'rgba(255,205,105,.95)'); grd.addColorStop(1, 'rgba(255,150,40,0)'); g.fillStyle = grd; g.fillRect(0, 0, 400, 400); }
+function drawGlow(x, y, s, a){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = a; ctx.drawImage(glowCv, x - 200 * s, y - 200 * s, 400 * s, 400 * s); ctx.restore(); }
+
+function drawTag(name, sub, beers, x, y, s, isMain){
+  const fs = Math.max(15, Math.round(23 * s / .42)), pad = fs * .45;
+  ctx.save();
+  if (sub){
+    ctx.font = `700 ${Math.round(fs * 0.74)}px "Be Vietnam Pro",system-ui,sans-serif`;
+    ctx.fillStyle = isMain ? '#7ce8ff' : '#8ef0b8';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText(sub, x, y - fs * 0.85);
+  }
+  ctx.font = `700 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
+  const label = beers > 0 ? `${name} · ${beers} KC` : name;
+  const w = ctx.measureText(label).width + pad * 2.2, h = fs * 1.5;
+  ctx.fillStyle = isMain ? 'rgba(92,32,8,.94)' : 'rgba(22,10,6,.86)';
+  BeerFX.roundRect(ctx, x - w / 2, y - h / 2, w, h, h / 2); ctx.fill();
+  ctx.lineWidth = isMain ? 2.5 : 1.5;
+  ctx.strokeStyle = isMain ? '#ffd26a' : 'rgba(245,185,66,.58)'; ctx.stroke();
+  ctx.fillStyle = '#fff3d6';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(label, x, y + 1);
+  ctx.restore();
+}
+
+function drawBubble(text, x, y, s){
+  const fs = Math.max(17, Math.round(23 * s / .42));
+  ctx.save();
+  ctx.font = `600 ${fs}px "Be Vietnam Pro",system-ui,sans-serif`;
+  const w = ctx.measureText(text).width + fs * 1.2, h = fs * 1.6;
+  ctx.fillStyle = 'rgba(255,247,226,.96)';
+  BeerFX.roundRect(ctx, x - w / 2, y - h, w, h, fs * .5); ctx.fill();
+  ctx.strokeStyle = '#d49424'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = '#3a1806'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y - h / 2 + 1);
+  ctx.restore();
+}
+
+function drawSeated(v, tSec, spot){
+  const x = spot ? spot.x : v.x;
+  const y0 = spot ? spot.y : v.y;
+  const s = spot ? spot.scale : v.seat.scale;
+  const jump = v.cheer > 0 ? Math.sin(Math.min(1, v.cheer) * Math.PI) * 10 * s : 0;
+  const bob = Math.sin(tSec * 1.6 + v.phase) * 1.8 * s;
+  const bow = v.sip > 0 ? Math.sin((1 - v.sip) * Math.PI) * 5 * s : 0;
+  if (v.glow > 0 || spot || v.isMe) drawGlow(x, y0 - 180 * s, s * 1.2, Math.max(v.glow * .7, spot ? .35 : .18));
+  const y = y0 + bob + bow - jump;
+  ctx.save();
+  ctx.globalAlpha = v.fade;
+  SP.draw(ctx, SC.activityKey(v.skin), x, y, s);
+  ctx.restore();
+}
+
+function drawWalker(v){
+  const s = v.seat.scale;
+  const bob = Math.abs(Math.sin(v.walkPhase)) * 4 * s;
+  ctx.save(); ctx.globalAlpha = v.fade;
+  SP.draw(ctx, SC.walkKey(v.skin), v.x, v.y - bob, s);
+  ctx.restore();
+}
+
+let last = performance.now();
+function frame(now){
+  requestAnimationFrame(frame);
+  if (document.hidden){ last = now; return; }
+  const dt = Math.min((now - last) / 1000, .05); last = now; const t = now / 1000;
+
+  const info = SC.phaseInfo(clock);
+  nightTarget = info.night;
+  night += (nightTarget - night) * Math.min(1, dt * 1.8);
+
+  if (castState.active){
+    const elapsed = now - castState.startAt;
+    if (elapsed < 0){ masterState.mode = 'shake'; castState.progress = 0; }
+    else if (elapsed < castState.dur){ masterState.mode = 'cast'; castState.progress = elapsed / castState.dur; }
+    else { castState.active = false; castState.progress = 0; masterState.mode = activeReading ? 'read' : 'idle'; }
+  } else if (now > masterState.until && !activeReading){
+    masterState.mode = 'idle';
+  }
+  masterState.spinBoost = Math.max(0, masterState.spinBoost - dt * 0.45);
+
+  for (const v of visitors.values()){
+    v.fade = Math.min(1, v.fade + dt * 2.4);
+    v.glow = Math.max(0, v.glow - dt * .45);
+    v.cheer = Math.max(0, v.cheer - dt * .8);
+    if (v.state === 'sit'){
+      if (v.sip > 0) v.sip = Math.max(0, v.sip - dt / 1.7);
+      else if ((v.nextSip -= dt) <= 0 && !v.leaving){ v.sip = 1; v.nextSip = 8 + Math.random() * 14; }
+    } else if (v.state === 'walk' || v.state === 'leave'){
+      v.walkPhase += dt * 9;
+      const p = v.path[0];
+      if (!p){
+        if (v.state === 'leave') visitors.delete(v.id);
+        else { v.state = 'sit'; v.x = v.seat.x; v.y = v.seat.y; }
+        continue;
+      }
+      const dx = p.x - v.x, dy = p.y - v.y, d = Math.hypot(dx, dy), step = (v.speed || 320) * dt;
+      if (d <= step){
+        v.x = p.x; v.y = p.y; v.path.shift();
+        if (!v.path.length){
+          if (v.state === 'leave') visitors.delete(v.id);
+          else { v.state = 'sit'; v.x = v.seat.x; v.y = v.seat.y; }
+        }
+      } else { v.x += dx / d * step; v.y += dy / d * step; }
+    }
+  }
+
+  ctx.clearRect(0, 0, SW, SH);
+  SC.drawBackground(ctx, A, night, SW, SH);
+  SC.drawAmbient(ctx, night, t, masterState.spinBoost);
+  SC.drawMaster(ctx, SP, masterState, t);
+  SC.drawCoinTray(ctx, 540, 1218, 1.0, t, castState);
+
+  const spot = SC.ACTIVE_SPOT;
+  const activeV = activeReading ? visitors.get(activeReading.id) : me;
+  SC.drawSeekerMat(ctx, spot.x, spot.y, spot.scale, true, true, !!(activeV && activeV.state === 'sit'));
+
+  const groups = [];
+  if (activeV && activeV.state === 'sit'){
+    groups.push({ y: spot.y, draw: () => drawSeated(activeV, t, spot) });
+  }
+  for (const tb of world.tables){
+    const seat = tb.nearSeats[0];
+    const guest = seat && seat.taken;
+    const isAtMain = guest && activeV && guest.id === activeV.id;
+    groups.push({
+      y: tb.y,
+      draw: () => {
+        SC.drawSeekerMat(ctx, tb.cx, tb.y, tb.scale, false, tb.showEmpty, !!(guest && !isAtMain));
+        if (guest && guest.state === 'sit' && !isAtMain) drawSeated(guest, t, null);
+      }
+    });
+  }
+  for (const v of visitors.values()){
+    if (v.state === 'walk' || v.state === 'leave') groups.push({ y: v.y, draw: () => drawWalker(v) });
+  }
+  groups.sort((a, b) => a.y - b.y);
+  for (const g2 of groups) g2.draw();
+
+  if (activeV && activeV.state === 'sit'){
+    const s = spot.scale, ty = spot.y - 420 * s - 14 * s;
+    const sub = activeReading ? `${activeReading.tierLabel} · ${activeReading.topic}` : `Chủ đề · ${activeV.topic}`;
+    drawTag(activeV.name, sub, activeV.beers, spot.x, ty, s, true);
+    if (activeV.bubble && now < activeV.bubble.until) drawBubble(activeV.bubble.text, spot.x, ty - 38, s);
+  }
+  for (const v of visitors.values()){
+    if (v.fade <= .05) continue;
+    if (activeV && v.id === activeV.id && v.state === 'sit') continue;
+    const s = v.seat.scale;
+    const key = (v.state === 'walk' || v.state === 'leave') ? SC.walkKey(v.skin) : SC.activityKey(v.skin);
+    const ty = v.y - spriteH(key) * s - 12 * s;
+    drawTag(v.name, v.asked ? '✓ đã hỏi' : v.topic, v.beers, v.x, ty, s, false);
+  }
+
+  for (let i = fx.length - 1; i >= 0; i--){
+    const f = fx[i]; f.t += dt; const k = f.t / f.life;
+    if (k >= 1){ fx.splice(i, 1); continue; }
+    const pop = 1 - Math.pow(1 - Math.min(1, f.t * 4), 3);
+    ctx.save(); ctx.globalAlpha = k < .75 ? 1 : (1 - k) / .25;
+    if (f.kind === 'coin') BeerFX.coin(ctx, f.x, f.y - Math.sin(k * Math.PI) * 180, f.s * (.6 + .4 * pop), { tilt: f.tilt, spin: f.t * 14, yang: true });
+    else BeerFX.ingot(ctx, f.x, f.y - k * 170, f.s * (.6 + .4 * pop), { tilt: f.tilt });
+    ctx.restore();
+  }
+  for (let i = particles.length - 1; i >= 0; i--){
+    const p = particles[i]; p.t += dt; if (p.t > p.life){ particles.splice(i, 1); continue; }
+    p.x += p.vx * dt + Math.sin(p.t * 3 + i) * 18 * dt; p.y += p.vy * dt;
+    ctx.save(); ctx.globalAlpha = Math.min(1, p.life - p.t);
+    if (p.type === 'lotus') BeerFX.lotus(ctx, p.x, p.y, p.s * 0.65, { tilt: Math.sin(p.t * 2) * 0.2 });
+    else BeerFX.coin(ctx, p.x, p.y, p.s * 0.52, { tilt: (p.rot || 0) + p.t * 2, spin: p.t * 8, yang: i % 2 === 0 });
+    ctx.restore();
+  }
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

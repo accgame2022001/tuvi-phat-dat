@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "categories": [
+    {
+      "id": "thiendinh",
+      "name": "Nhạc Thiền · Cổ Phong",
+      "tracks": [
+        {
+          "id": "co-cam-tinh-tam",
+          "title": "Cổ Cầm Tĩnh Tâm · Đàn Tranh & Chuông",
+          "engine": "band",
+          "credit": "BEAR",
+          "license": "MIT"
+        },
+        {
+          "id": "dem-thanh-tinh",
+          "title": "Đêm Thanh Tịnh",
+          "src": "music1.mp3",
+          "credit": "BEAR",
+          "license": "MIT"
+        },
+        {
+          "id": "ung-dung-tu-tai",
+          "title": "Ung Dung Tự Tại",
+          "src": "music2.mp3",
+          "credit": "BEAR",
+          "license": "MIT"
+        }
+      ]
+    }
+  ]
+}

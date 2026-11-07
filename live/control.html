@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bảng điều khiển · Tử Vi Phát Đạt (BEAR)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#120806; --card:#1f100b; --card2:#2e1710; --fg:#f8efe0; --muted:#c4a88b; --line:#4a2818;
+  --amber:#f5b942; --amber2:#ffe699; --red:#a81c14; --green:#2f7a4a; --display:"Be Vietnam Pro",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--display);padding:18px max(16px,env(safe-area-inset-right)) 30px max(16px,env(safe-area-inset-left))}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+h1{font-size:24px;margin:0;color:var(--amber2);font-weight:800}
+.status{display:flex;gap:10px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;font-variant-numeric:tabular-nums}
+.chip.ok{border-color:var(--green);color:#9fe0b4}.chip.bad{border-color:#a33;color:#f3a3a3}
+.chip.day{border-color:#c99a3a;color:#ffe2a6}.chip.night{border-color:#d48a29;color:#ffe6b8}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0}
+.card h2{margin:0;font:700 13px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+.hint{color:var(--muted);font-size:12px;margin:0}
+label{display:grid;gap:4px;font-size:12px;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--fg);background:#120704;border:1px solid var(--line);border-radius:9px;padding:8px 10px;width:100%;min-width:0}
+textarea{resize:vertical;min-height:60px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.row>*{flex:1 1 0;min-width:0}
+.row.tight>*{flex:0 0 auto}
+button{font:700 13px var(--display);color:var(--fg);background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;cursor:pointer}
+button:hover{border-color:var(--amber)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+button.primary{background:var(--green);border-color:#3f9a60}
+button.gold{background:#784c12;border-color:var(--amber)}
+button.red{background:var(--red);border-color:#d05245}
+.check{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--fg)}
+.check input{width:auto}
+#people{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+#people table{width:100%;border-collapse:collapse;font-size:13px}
+#people td{padding:5px 8px;border-bottom:1px solid #30180e}
+#people td:last-child{text-align:right;color:var(--amber2);font-variant-numeric:tabular-nums}
+#people td:last-child button{margin-left:6px;padding:2px 7px;font-size:11px;border-radius:6px}
+#menuTable{width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--line);border-radius:10px}
+#menuTable td{padding:5px 10px;border-bottom:1px solid #30180e}
+#menuTable tr:last-child td{border-bottom:0}
+#menuTable td:last-child{text-align:right;color:var(--amber2);font-variant-numeric:tabular-nums;font-weight:700}
+#log{height:220px;overflow:auto;background:#0b0402;border:1px solid var(--line);border-radius:10px;padding:8px;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+  <h1>☯ Bảng điều khiển · Tử Vi Phát Đạt (BEAR)</h1>
+  <div class="status">
+    <span class="chip" id="srv">Server: …</span>
+    <span class="chip" id="phaseChip">☯ Linh Đàn · Đêm</span>
+    <span class="chip" id="tt">TikTok: chưa kết nối</span>
+    <span class="chip" id="cnt">0 thiện tín</span>
+    <span class="chip" id="beers">0 KC</span>
+  </div>
+</header>
+
+<div class="grid">
+  <section class="card">
+    <h2>1 · Kết nối TikTok LIVE</h2>
+    <label for="uid">Username kênh đang live</label>
+    <div class="row"><input id="uid" placeholder="@tenkenhcuaban" autocomplete="off"><button class="primary" id="btnConnect">Kết nối</button><button id="btnDisconnect">Ngắt</button></div>
+    <p class="hint">Đọc sự kiện công khai của phòng live (theo dõi, vào phòng, bình luận chủ đề, quà, tim). Không cần mật khẩu hay cookie TikTok.</p>
+    <button class="gold" id="btnOverlay">☯ Mở màn hình Overlay 9:16</button>
+    <p class="hint">Trong TikTok LIVE Studio / OBS: chọn cửa sổ overlay 1080×1920 và bấm "Bật âm thanh" một lần.</p>
+    <h2>Thiện tín trong phòng</h2>
+    <div id="people"><table><tbody id="peopleBody"><tr><td class="hint">Chưa có ai</td><td></td></tr></tbody></table></div>
+  </section>
+
+  <section class="card">
+    <h2>2 · Thử Gieo Quẻ &amp; Tương Tác</h2>
+    <div class="row">
+      <label for="simName">Tên thiện tín<input id="simName" value="Kiều Hùng"></label>
+      <label for="simTopic">Chủ đề xin quẻ
+        <select id="simTopic">
+          <option value="Tình Duyên">💕 Tình Duyên</option>
+          <option value="Tài Lộc">💰 Tài Lộc</option>
+          <option value="Sự Nghiệp">📈 Sự Nghiệp</option>
+          <option value="Gia Đạo">🏡 Gia Đạo</option>
+          <option value="Sức Khỏe">🌿 Sức Khỏe</option>
+          <option value="Vận Mệnh">☯ Vận Mệnh</option>
+        </select>
+      </label>
+    </div>
+    <label for="simText">Bình luận</label>
+    <input id="simText" value="Khai lộc tình duyên thầy ơi!">
+    <div class="row"><button id="btnChat">💬 Gửi bình luận</button><button id="btnFollow">❤ Theo dõi</button><button id="btnCheer">🙏 Cầu an</button></div>
+    <h2>Đổi nhân vật</h2>
+    <div class="row tight">
+      <button data-skin-word="nam">Nam</button>
+      <button data-skin-word="nữ">Nữ</button>
+      <button data-skin-word="công tử">Công tử</button>
+      <button data-skin-word="tiểu thư">Tiểu thư</button>
+      <button data-skin-word="ông già">Ông già</button>
+      <button data-skin-word="bà già">Bà già</button>
+    </div>
+    <h2>5 Mốc Gieo Quẻ Kinh Dịch</h2>
+    <table id="menuTable">
+      <tbody>
+        <tr><td>🪙 Khai Lộc (Quẻ ngắn · 18s)</td><td>1–9 KC</td></tr>
+        <tr><td>📜 Phúc Lộc (Quẻ sâu · 25s)</td><td>10–29 KC</td></tr>
+        <tr><td>🔮 Thiên Lộc (Quẻ chi tiết · 35s)</td><td>30–69 KC</td></tr>
+        <tr><td>🐉 Long Phượng (Đại quẻ · 48s)</td><td>70–149 KC</td></tr>
+        <tr><td>👑 Thiên Mệnh (Thiên mệnh · 65s)</td><td>150+ KC</td></tr>
+      </tbody>
+    </table>
+    <div class="row">
+      <button data-gift="Khai Lộc" data-dia="1">🪙 Khai Lộc · 1 KC</button>
+      <button data-gift="Phúc Lộc" data-dia="15">📜 Phúc Lộc · 15 KC</button>
+      <button data-gift="Thiên Lộc" data-dia="35">🔮 Thiên Lộc · 35 KC</button>
+    </div>
+    <div class="row">
+      <button data-gift="Long Phượng" data-dia="80">🐉 Long Phượng · 80 KC</button>
+      <button data-gift="Thiên Mệnh" data-dia="180">👑 Thiên Mệnh · 180 KC</button>
+      <button data-dice="1">🎋 Lắc Ống Xâm</button>
+    </div>
+    <div class="row"><button class="gold" id="btnToast">☯ Ban lời chúc Đại Cát</button><button class="gold" id="btnDice">🎋 Thử lắc ống xâm</button></div>
+    <div id="lastBeer" class="hint">Quẻ gần nhất: —</div>
+    <div id="lastDice" class="hint">Xâm gần nhất: —</div>
+    <h2>Đổ người mẫu</h2>
+    <div class="row"><button data-fill="12">12</button><button data-fill="24">24</button><button data-fill="36">36</button><button data-fill="48">48</button><button data-fill="64">64</button></div>
+    <button class="red" id="btnClear">Làm trống phòng</button>
+    <h2>Bot thiện tín mô phỏng</h2>
+    <div class="row">
+      <label>Số bot<input id="botN" type="number" min="1" max="64" value="12"></label>
+      <label>Nhịp<select id="botPace"><option value="slow">Chậm</option><option value="mid" selected>Vừa</option><option value="fast">Nhanh</option></select></label>
+      <button id="btnBots">Bật bot</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3 · Giọng Ông Đồ · Nhạc Thiền · Cảnh</h2>
+    <div class="row">
+      <label>Giọng đọc<select id="voice"><option value="google">Google (ổn định · nhanh)</option><option value="vi-VN-NamMinhNeural">Ông Đồ Nam Minh (Edge · trầm ấm)</option><option value="vi-VN-HoaiMyNeural">Hoài My (Edge · nữ)</option></select></label>
+      <label>Độ trầm (Hz)<input id="pitch" type="number" step="1" value="-10"></label>
+      <label>Tốc độ (%)<input id="rate" type="number" step="1" value="-2"></label>
+    </div>
+    <label for="sayText">Ông Đồ nhắn gửi / phát thông báo</label>
+    <textarea id="sayText">Hoan hỷ chào đón các thiện tín hữu duyên ghé phòng Tử Vi Phát Đạt. Muốn xem tình duyên, tài lộc hay gia đạo, hãy bình luận chủ đề kèm mốc quẻ!</textarea>
+    <div class="row"><button class="primary" id="btnSay">Phát giọng Ông Đồ</button><button id="btnToast2">Ban lời chúc</button></div>
+    <div class="row tight">
+      <label class="check"><input type="checkbox" id="music" checked> Nhạc thiền cổ phong</label>
+      <label class="check"><input type="checkbox" id="sfx" checked> Tiếng chuông &amp; đồng xu</label>
+      <label class="check"><input type="checkbox" id="ambience" checked> Âm thanh linh đàn</label>
+      <label class="check"><input type="checkbox" id="autoToast" checked> Tự chúc phúc</label>
+    </div>
+    <div class="row">
+      <label>Nhạc nền<select id="musicTrack"><option value="">Phát lần lượt</option></select></label>
+      <label>Âm lượng nhạc (0–100)<input id="musicVolume" type="number" min="0" max="100" step="5" value="48"></label>
+    </div>
+    <div class="row">
+      <label>Tự chúc phúc mỗi (phút)<input id="toastEveryMin" type="number" min="1" max="60" value="3"></label>
+      <label>Số chỗ ngồi trên thảm<select id="seatMode"><option value="auto">Tự mở rộng 12 → 64</option><option value="12">12</option><option value="24">24</option><option value="36">36</option><option value="48">48</option><option value="64">64</option></select></label>
+    </div>
+    <h2>Bảng hiệu</h2>
+    <label>Tên phòng<input id="title" value="Tử Vi Phát Đạt"></label>
+    <label>Dòng phụ<input id="subtitle" value="Gieo Quẻ Kinh Dịch · Luận Giải Nhân Duyên"></label>
+    <label class="check"><input type="checkbox" id="autoSeatFollowers"> Người đã theo dõi tự vào ngồi chiếu khi ghé live</label>
+    <h2>Khung giờ ánh sáng</h2>
+    <div class="row">
+      <label>Chế độ cảnh<select id="phaseMode"><option value="auto">Tự động theo giờ</option><option value="food">Đạo Quán Ban Ngày</option><option value="beer">Linh Đàn Ban Đêm</option></select></label>
+      <label>Ban ngày từ (giờ)<input id="foodFrom" type="number" min="0" max="23" step="1" value="6"></label>
+      <label>Ban đêm từ (giờ)<input id="beerFrom" type="number" min="0" max="23" step="1" value="18"></label>
+    </div>
+  </section>
+</div>
+
+<section class="card" style="margin-top:16px">
+  <h2>Nhật ký</h2>
+  <div id="log" aria-live="polite"></div>
+</section>
+<footer class="hint" style="margin-top:14px;text-align:center">Tử Vi Phát Đạt · mã nguồn mở MIT · bản BEAR</footer>
+
+<script src="/assets/scene.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let ws = null;
+const send = (cmd, extra = {}) => ws?.readyState === 1 && ws.send(JSON.stringify({ t: 'ctl', cmd, ...extra }));
+function logLine(s){ const el = $('log'); el.textContent += s + '\n'; el.scrollTop = el.scrollHeight; }
+const SETTING_IDS = ['voice', 'pitch', 'rate', 'music', 'musicTrack', 'musicVolume', 'sfx', 'ambience', 'autoToast', 'toastEveryMin', 'title', 'subtitle', 'seatMode', 'autoSeatFollowers', 'phaseMode', 'foodFrom', 'beerFrom'];
+let lastSettings = {};
+function updatePhaseChip(){
+  if (!window.BeerScene) return;
+  const info = BeerScene.phaseInfo(lastSettings);
+  const mode = lastSettings.phaseMode || 'auto';
+  const hh = String(Math.floor(info.next.at) % 24).padStart(2, '0');
+  const el = $('phaseChip');
+  el.className = 'chip ' + (info.food ? 'day' : 'night');
+  el.textContent = `${info.icon} ${info.label} · ${mode === 'auto' ? `→ ${info.next.label} ${hh}:00` : 'đang giữ'}`;
+}
+function setTrackValue(sel, value){
+  if (!value){ sel.value = ''; return; }
+  if (![...sel.options].some(o => o.value === value)){ const o = document.createElement('option'); o.value = value; o.textContent = value; sel.append(o); }
+  sel.value = value;
+}
+function fillSettings(s){
+  lastSettings = { ...lastSettings, ...s };
+  for (const k of SETTING_IDS){ const el = $(k); if (!el || s[k] === undefined) continue; if (el.type === 'checkbox') el.checked = !!s[k]; else el.value = s[k]; }
+  if (s.musicTrack !== undefined) setTrackValue($('musicTrack'), s.musicTrack);
+  updatePhaseChip();
+}
+function readSettings(){ const o = {}; for (const k of SETTING_IDS){ const el = $(k); o[k] = el.type === 'checkbox' ? el.checked : el.type === 'number' ? +el.value : el.value; } return o; }
+const people = new Map();
+let barBeers = 0;
+updatePhaseChip();
+setInterval(updatePhaseChip, 30000);
+function renderPeople(){
+  const tb = $('peopleBody'); tb.innerHTML = '';
+  const list = [...people.values()].sort((a, b) => b.beers - a.beers || a.name.localeCompare(b.name));
+  if (!list.length){ tb.innerHTML = '<tr><td class="hint">Chưa có ai</td><td></td></tr>'; }
+  list.forEach((p, i) => {
+    const tr = document.createElement('tr');
+    const a = document.createElement('td'); a.textContent = `${String(i + 1).padStart(2, '0')}  ${p.name} (${p.topic || 'Vận Mệnh'})${p.asked ? ' ✓' : ''}`;
+    const b = document.createElement('td'); b.textContent = p.beers ? p.beers + ' KC' : '';
+    if (/^(sim|demo|bot)_/.test(p.id)){ const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.onclick = () => send('kick', { id: p.id }); b.append(x); }
+    tr.append(a, b); tb.append(tr);
+  });
+  $('cnt').textContent = `${people.size} thiện tín`;
+  $('beers').textContent = `${barBeers} KC`;
+}
+function setTT(st){
+  const el = $('tt'); el.className = 'chip ' + (st.status === 'connected' ? 'ok' : st.status === 'error' ? 'bad' : '');
+  el.textContent = st.status === 'connected' ? `TikTok: @${st.uniqueId} ✓` : st.status === 'connecting' ? `TikTok: đang kết nối @${st.uniqueId}…` : st.status === 'error' ? 'TikTok: lỗi kết nối' : 'TikTok: chưa kết nối';
+}
+function connect(){
+  ws = new WebSocket(`ws://${location.host}/ws?role=control`);
+  ws.onopen = () => { $('srv').textContent = 'Server: đang chạy'; $('srv').className = 'chip ok'; };
+  ws.onclose = () => { $('srv').textContent = 'Server: mất kết nối'; $('srv').className = 'chip bad'; setTimeout(connect, 2000); };
+  ws.onmessage = e => {
+    const m = JSON.parse(e.data);
+    if (m.t === 'state'){ fillSettings(m.settings); setTT(m.tiktok); people.clear(); for (const v of m.viewers) people.set(v.id, v); barBeers = Number.isFinite(m.barBeers) ? m.barBeers : [...people.values()].reduce((n, p) => n + (p.beers || 0), 0); renderPeople(); }
+    else if (m.t === 'logs'){ $('log').textContent = ''; m.lines.forEach(logLine); }
+    else if (m.t === 'log') logLine(m.line);
+    else if (m.t === 'tiktok') setTT(m);
+    else if (m.t === 'join'){ people.set(m.v.id, m.v); renderPeople(); }
+    else if (m.t === 'follow'){ const p = people.get(m.id); if (p){ p.followed = true; renderPeople(); } }
+    else if (m.t === 'topic'){ const p = people.get(m.id); if (p){ p.topic = m.topic; renderPeople(); } }
+    else if (m.t === 'leave'){ people.delete(m.id); renderPeople(); }
+    else if (m.t === 'beer'){
+      const p = people.get(m.id);
+      if (p){ p.beers = m.total; p.asked = true; if (m.order?.topic) p.topic = m.order.topic; renderPeople(); }
+      barBeers = Number.isFinite(m.barBeers) ? m.barBeers : barBeers + (m.beers || 0);
+      $('beers').textContent = `${barBeers} KC`;
+      $('lastBeer').textContent = `Quẻ gần nhất: ${m.name} → ${m.hex ? `Quẻ số ${m.hex.num} ${m.hex.name} (${m.hex.rank})` : m.order?.text} · tổng ${m.total} KC`;
+    }
+    else if (m.t === 'dice'){
+      const p = people.get(m.id);
+      if (p){ p.beers = m.total; p.asked = true; renderPeople(); }
+      barBeers = Number.isFinite(m.barBeers) ? m.barBeers : barBeers + (m.bonus || 0);
+      $('beers').textContent = `${barBeers} KC`;
+      $('lastDice').textContent = `Xâm gần nhất: ${m.viewer} · Xâm số ${m.sum} · ${m.label} (+${m.bonus} KC)`;
+    }
+    else if (m.t === 'bots') $('btnBots').textContent = m.on ? 'Tắt bot' : 'Bật bot';
+  };
+}
+connect();
+
+$('btnConnect').onclick = () => send('connect', { uniqueId: $('uid').value });
+$('uid').onkeydown = e => { if (e.key === 'Enter') send('connect', { uniqueId: $('uid').value }); };
+$('btnDisconnect').onclick = () => send('disconnect');
+$('btnOverlay').onclick = () => window.open('/live/overlay.html', 'overlay916', 'width=540,height=960');
+$('btnChat').onclick = () => send('chat', { name: $('simName').value, text: $('simText').value });
+$('btnFollow').onclick = () => send('follow', { name: $('simName').value });
+$('btnCheer').onclick = () => send('cheer', { name: $('simName').value });
+$('btnDice').onclick = () => send('dice', { name: $('simName').value });
+$('btnToast').onclick = () => send('cheer', { global: true });
+$('btnToast2').onclick = () => send('cheer', { global: true });
+document.querySelectorAll('[data-gift]').forEach(b => b.onclick = () => send('beer', {
+  name: $('simName').value,
+  topic: $('simTopic').value,
+  gift: `${b.dataset.gift} ${$('simTopic').value}`,
+  diamonds: +b.dataset.dia,
+  count: 1,
+}));
+document.querySelectorAll('[data-skin-word]').forEach(b => b.onclick = () => send('chat', { name: $('simName').value, text: b.dataset.skinWord }));
+document.querySelectorAll('[data-dice]').forEach(b => b.onclick = () => send('dice', { name: $('simName').value, gift: 'Ống Xâm Linh Ứng' }));
+document.querySelectorAll('[data-fill]').forEach(b => b.onclick = () => send('fill', { n: +b.dataset.fill }));
+$('btnClear').onclick = () => send('clear');
+$('btnBots').onclick = () => send('bots', { on: $('btnBots').textContent.includes('Bật'), n: +$('botN').value, pace: $('botPace').value });
+$('btnSay').onclick = () => send('say', { text: $('sayText').value });
+for (const k of SETTING_IDS) $(k).addEventListener('change', () => send('settings', { settings: readSettings() }));
+fetch('/assets/music/library.json').then(r => r.json()).then(lib => {
+  const sel = $('musicTrack');
+  for (const c of (lib.categories || [])) {
+    const tracks = (c.tracks || []).filter(t => t && (t.src || t.engine));
+    if (!tracks.length) continue;
+    const group = document.createElement('optgroup'); group.label = c.name || c.id;
+    for (const t of tracks){ const o = document.createElement('option'); o.value = t.id || t.src; o.textContent = t.title || t.id; group.append(o); }
+    sel.append(group);
+  }
+  if (lastSettings.musicTrack) setTrackValue(sel, lastSettings.musicTrack);
+}).catch(() => {});
+</script>
+</body>
+</html>
