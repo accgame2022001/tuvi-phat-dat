@@ -15,9 +15,9 @@ Nhấp đúp `run.bat` ở thư mục gốc. File sẽ:
 
 1. Kiểm tra Node.js; nếu chưa có hoặc cũ hơn 22.19 thì hỏi có muốn tự cài/nâng cấp Node.js LTS bằng `winget` không.
 2. Tự cài dependency cho `live/` nếu thiếu (chạy `run.bat --reinstall` để cài lại).
-3. Mở server LIVE tại `http://localhost:3388` (bỏ qua nếu cổng đã có server chạy sẵn).
-4. Mở web demo tĩnh tại `http://localhost:4174`.
-5. Chờ server sẵn sàng rồi tự mở web demo và bảng điều khiển `http://localhost:3388/live/control.html`.
+3. Mở server LIVE tại `http://localhost:3000` (bỏ qua nếu cổng đã có server chạy sẵn).
+4. Mở web demo tĩnh tại `http://localhost:4173`.
+5. Chờ server sẵn sàng rồi tự mở web demo và bảng điều khiển `http://localhost:3000/live/control.html`.
 
 Đóng hai cửa sổ server để dừng ứng dụng.
 
@@ -31,12 +31,12 @@ npm install
 npm start
 ```
 
-1. Mở `http://localhost:3388/live/control.html` (bảng điều khiển).
-2. Bấm **Mở màn hình overlay 9:16**, rồi bấm **Bật âm thanh** một lần trong cửa sổ đó (trình duyệt chặn tự phát tiếng).
-3. Trong TikTok LIVE Studio: *Add source → Window capture* → chọn cửa sổ overlay. Với OBS: *Browser source* trỏ tới `http://localhost:3388/live/overlay.html`, kích thước `1080×1920`.
+1. Mở `http://localhost:3000/live/control.html` (bảng điều khiển).
+2. Bấm **Mở màn hình overlay 9:16** (hoặc thêm trực tiếp link `http://localhost:3000/live/overlay.html` vào TikTok LIVE Studio / OBS). Âm thanh trên overlay sẽ tự động kích hoạt, không hiện nút chắn màn hình.
+3. Trong TikTok LIVE Studio: dùng *Link / Browser source* trỏ tới `http://localhost:3000/live/overlay.html` (hoặc *Window capture* cửa sổ overlay). Với OBS: *Browser source* trỏ tới `http://localhost:3000/live/overlay.html`, kích thước `1080×1920`.
 4. Bật LIVE trên TikTok, nhập `@username` vào bảng điều khiển, bấm **Kết nối**.
 
-Đổi cổng bằng biến môi trường, ví dụ `PORT=3400 npm start` (Windows PowerShell: `$env:PORT=3400; npm start`).
+Đổi cổng bằng biến môi trường, ví dụ `PORT=3100 npm start` (Windows PowerShell: `$env:PORT=3100; npm start`).
 
 Chưa live vẫn thử được: dùng **Thử tương tác**, **5 nút Gieo Quẻ theo mốc**, **Đổ người mẫu 12/24/36/48/64**, **Làm trống đền** hoặc **Bot mô phỏng**.
 

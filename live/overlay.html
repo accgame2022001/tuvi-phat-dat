@@ -104,7 +104,6 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
 .dz-label.bao{background:linear-gradient(180deg,#ffdf7a,#ff9d2e);box-shadow:0 0 34px rgba(255,170,50,.6)}
 .dz-bonus{font-size:26px;color:var(--amber2);font-weight:700;margin-top:12px}
 .dz-challenge{font-size:23px;color:#fff0d4;margin-top:8px;line-height:1.4}
-#unmute{position:absolute;z-index:9;left:50%;top:1540px;transform:translateX(-50%);font:800 34px var(--display);padding:20px 42px;border-radius:24px;border:3px solid var(--amber2);background:#b31b12;color:#fff4dc;cursor:pointer;box-shadow:0 12px 36px rgba(0,0,0,.6)}
 #conn{position:absolute;z-index:4;right:16px;bottom:10px;font-size:18px;color:var(--muted);opacity:.6}
 @media (prefers-reduced-motion:reduce){#cheer,#beerCard,#diceCard{transition:none}}
 </style>
@@ -173,7 +172,6 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
     <div class="dz-bonus" id="dzBonus"></div>
     <div class="dz-challenge" id="dzChallenge"></div>
   </div>
-  <button id="unmute">🔔 Bấm để bật âm thanh</button>
   <div id="conn">đang kết nối…</div>
 </div></div>
 
@@ -464,24 +462,33 @@ function showDiceCard(m){
 
 let AC = null, master = null, sfxBus = null, noiseBuf = null, crowd = null;
 const player = new BarAudio.MusicPlayer({ manifestUrl: '/assets/music/library.json', storageKey: 'tuviOverlayMusic', fadeIn: 2.5 });
-document.getElementById('unmute').onclick = e => { e.currentTarget.remove(); startAudio(); };
 function startAudio(){
-  if (AC) return;
-  AC = new (window.AudioContext || window.webkitAudioContext)();
-  master = AC.createGain(); master.gain.value = .9; master.connect(AC.destination);
-  sfxBus = AC.createGain(); sfxBus.gain.value = 1; sfxBus.connect(master);
-  noiseBuf = AC.createBuffer(1, AC.sampleRate * 1.2, AC.sampleRate);
-  const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-  crowd = new BarSound.Crowd(AC, master);
-  crowd.start();
-  crowd.setEnabled(settings.ambience !== false);
-  crowd.setLevel(crowdLevel());
-  player.attach(AC, master);
-  player.setEnabled(settings.music !== false);
-  player.setVolume((Number(settings.musicVolume) || 48) / 100);
-  player.start();
-  sfxClink(true);
+  if (!AC){
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    AC = new Ctx();
+    master = AC.createGain(); master.gain.value = .9; master.connect(AC.destination);
+    sfxBus = AC.createGain(); sfxBus.gain.value = 1; sfxBus.connect(master);
+    noiseBuf = AC.createBuffer(1, AC.sampleRate * 1.2, AC.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    crowd = new BarSound.Crowd(AC, master);
+    crowd.start();
+    crowd.setEnabled(settings.ambience !== false);
+    crowd.setLevel(crowdLevel());
+    player.attach(AC, master);
+    player.setEnabled(settings.music !== false);
+    player.setVolume((Number(settings.musicVolume) || 48) / 100);
+    player.start();
+  }
+  if (AC && AC.state === 'suspended'){
+    AC.resume().then(() => { player.start(); }).catch(() => {});
+  }
 }
+startAudio();
+for (const ev of ['pointerdown', 'mousedown', 'touchstart', 'keydown', 'click']){
+  addEventListener(ev, () => startAudio(), { passive: true });
+}
+setInterval(() => { if (!AC || AC.state === 'suspended') startAudio(); }, 1500);
 function duck(on){ player.duck(on); crowd?.duck(on); }
 function noise(t, dur, freq, q, gain){
   if (!AC) return;
@@ -530,16 +537,21 @@ function sfxCheer(){
   crowd?.cheer(1);
 }
 const ttsQ = []; let ttsPlaying = false;
-function queueTTS(url, rate){ ttsQ.push({ url, rate }); playTTS(); }
+function queueTTS(url, rate){ startAudio(); ttsQ.push({ url, rate }); playTTS(); }
 function playTTS(){
-  if (ttsPlaying || !ttsQ.length || !AC) return;
+  if (ttsPlaying || !ttsQ.length) return;
+  startAudio();
   ttsPlaying = true;
   masterState.mode = 'read';
   const { url, rate } = ttsQ.shift();
   const el = new Audio(url);
-  const src = AC.createMediaElementSource(el);
-  const g = AC.createGain(); g.gain.value = 1.25;
-  src.connect(g); g.connect(master);
+  if (AC && master && AC.state === 'running'){
+    try {
+      const src = AC.createMediaElementSource(el);
+      const g = AC.createGain(); g.gain.value = 1.25;
+      src.connect(g); g.connect(master);
+    } catch {}
+  }
   el.playbackRate = Math.max(.5, Math.min(1.5, 1 + (+rate || 0) / 100));
   el.onplay = () => { duck(true); masterState.mode = 'read'; };
   el.onended = el.onerror = () => {
